@@ -35,3 +35,16 @@
 	color: silver;
 	cursor: not-allowed;
 }
+
+.treeview .tree-icons {
+    display: none;
+}
+
+.treeview .list-group-item:hover .tree-icons {
+    display: block;
+}
+
+.treeview .tree-icons .tree-icon {
+    margin-left: 4px;
+}
+

@@ -69,7 +69,10 @@
 		onNodeUnchecked: undefined,
 		onNodeUnselected: undefined,
 		onSearchComplete: undefined,
-		onSearchCleared: undefined
+		onSearchCleared: undefined,
+        
+        buttons: []
+        
 	};
 
 	_default.options = {
@@ -605,6 +608,30 @@
 						);
 				});
 			}
+            
+            // Add buttons
+            if (_this.options.buttons.length > 0) {
+                var treeButtonIconsItem = $(_this.template.treeButtonIcons);
+
+                $.each(_this.options.buttons, function(id, button) {
+                    var buttonItem = $(_this.template.treeButtonIcon)
+                        .addClass(button.icon)
+                        .attr("title", button.title);
+                    
+                    // Add click event
+                    if (typeof (button.onClick) === 'function') {
+                        buttonItem.on('click', function(event) {
+                            event.stopPropagation();
+                            button.onClick($.extend(true, {}, node));
+                        });
+                    }
+                    
+                    // append button
+                    treeButtonIconsItem.append(buttonItem);
+				});
+                
+                treeItem.append(treeButtonIconsItem);
+            }
 
 			// Add item to the tree
 			_this.$wrapper.append(treeItem);
@@ -692,7 +719,10 @@
 		indent: '<span class="indent"></span>',
 		icon: '<span class="icon"></span>',
 		link: '<a href="#" style="color:inherit;"></a>',
-		badge: '<span class="badge"></span>'
+		badge: '<span class="badge"></span>',
+        treeButtonIcons: '<span class="tree-icons pull-right"></span>',
+        treeButtonIcon: '<span class="tree-icon"></span>'
+
 	};
 
 	Tree.prototype.css = '.treeview .list-group-item{cursor:pointer}.treeview span.indent{margin-left:10px;margin-right:10px}.treeview span.icon{width:12px;margin-right:5px}.treeview .node-disabled{color:silver;cursor:not-allowed}'
