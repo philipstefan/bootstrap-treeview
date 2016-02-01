@@ -71,7 +71,7 @@
 		onSearchComplete: undefined,
 		onSearchCleared: undefined,
         
-        buttons: []
+		buttons: undefined
         
 	};
 
@@ -609,11 +609,23 @@
 				});
 			}
             
+			var nodeButtons = [];
+			
             // Add buttons
-            if (_this.options.buttons.length > 0) {
-                var treeButtonIconsItem = $(_this.template.treeButtonIcons);
+			if (typeof _this.options.buttons === 'function') {
 
-                $.each(_this.options.buttons, function(id, button) {
+                nodeButtons = _this.options.buttons(node);
+                
+			} else if (typeof _this.options.buttons === 'object' && _this.options.constructor === Array) {
+				
+				nodeButtons = _this.options.buttons;
+				
+			}
+
+			if (nodeButtons.length > 0) {
+                var treeButtonIconsItem = $(_this.template.treeButtonIcons);
+                
+                $.each(nodeButtons, function(id, button) {
                     var buttonItem = $(_this.template.treeButtonIcon)
                         .addClass(button.icon)
                         .attr("title", button.title);
