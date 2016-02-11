@@ -616,7 +616,7 @@
 
                 nodeButtons = _this.options.buttons(node);
                 
-			} else if (typeof _this.options.buttons === 'object' && _this.options.constructor === Array) {
+			} else if (typeof _this.options.buttons === 'object' && _this.options.buttons.constructor === Array) {
 				
 				nodeButtons = _this.options.buttons;
 				
