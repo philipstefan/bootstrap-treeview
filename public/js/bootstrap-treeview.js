@@ -1,5 +1,5 @@
 /* =========================================================
- * bootstrap-treeview.js v1.2.0
+ * bootstrap-treeview.js v1.2.6
  * =========================================================
  * Copyright 2013 Jonathan Miles
  * Project URL : http://www.jondmiles.com/bootstrap-treeview
@@ -339,6 +339,7 @@
 		else {
 			
 			if (node.selectable) {
+				node.state.selected = false;
 				this.toggleSelectedState(node, _default.options);
 			} else {
 				this.toggleExpandedState(node, _default.options);
@@ -599,6 +600,14 @@
 					.append(node.text);
 			}
 
+			// Add alert tag
+			if (node.alertTag) {
+				treeItem
+					.append($(_this.template.alertBadge)
+						.append(node.alertTag)
+					);
+			}
+
 			// Add tags as badges
 			if (_this.options.showTags && node.tags) {
 				$.each(node.tags, function addTag(id, tag) {
@@ -608,7 +617,7 @@
 						);
 				});
 			}
-            
+
 			var nodeButtons = [];
 			
             // Add buttons
@@ -616,7 +625,7 @@
 
                 nodeButtons = _this.options.buttons(node);
                 
-			} else if (typeof _this.options.buttons === 'object' && _this.options.constructor === Array) {
+			} else if (typeof _this.options.buttons === 'object' && _this.options.buttons.constructor === Array) {
 				
 				nodeButtons = _this.options.buttons;
 				
@@ -732,6 +741,7 @@
 		icon: '<span class="icon"></span>',
 		link: '<a href="#" style="color:inherit;"></a>',
 		badge: '<span class="badge"></span>',
+		alertBadge: '<span class="alert-badge"></span>',
         treeButtonIcons: '<span class="tree-icons pull-right"></span>',
         treeButtonIcon: '<span class="tree-icon"></span>'
 

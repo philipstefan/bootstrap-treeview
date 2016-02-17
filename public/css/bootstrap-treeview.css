@@ -1,5 +1,5 @@
 /* =========================================================
- * bootstrap-treeview.css v1.2.0
+ * bootstrap-treeview.css v1.2.6
  * =========================================================
  * Copyright 2013 Jonathan Miles 
  * Project URL : http://www.jondmiles.com/bootstrap-treeview
@@ -48,3 +48,17 @@
     margin-left: 4px;
 }
 
+.treeview .alert-badge {
+    background-color: red;
+    color: white;
+    border-radius: 10px;
+    display: inline-block;
+    padding: 2px 5px;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 1;
+    white-space: nowrap;
+    vertical-align: text-bottom;
+    margin: 0px 3px;
+    text-align: center;
+}
