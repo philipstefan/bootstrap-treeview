@@ -1,5 +1,5 @@
 /* =========================================================
- * bootstrap-treeview.js v1.2.6
+ * bootstrap-treeview.js v1.2.7
  * =========================================================
  * Copyright 2013 Jonathan Miles
  * Project URL : http://www.jondmiles.com/bootstrap-treeview
@@ -502,7 +502,11 @@
 		this.$element.empty().append(this.$wrapper.empty());
 
 		// Build tree
-		this.buildTree(this.tree, 0);
+		if (this.searching) {
+			this.buildTree(this.searchResults, 0);
+		} else {
+			this.buildTree(this.tree, 0);
+		}
 	};
 
 	// Starting from the root node, and recursing down the
@@ -531,7 +535,7 @@
 
 			// Add expand, collapse or empty spacer icons
 			var classList = [];
-			if (node.nodes && node.nodes.length > 0) {
+			if (!_this.searching && node.nodes && node.nodes.length > 0) {
 				classList.push('expand-icon');
 				if (node.state.expanded) {
 					classList.push(_this.options.collapseIcon);
@@ -658,9 +662,10 @@
 			_this.$wrapper.append(treeItem);
 
 			// Recursively add child ndoes
-			if (node.nodes && node.state.expanded && !node.state.disabled) {
+			if (!_this.searching && node.nodes && node.state.expanded && !node.state.disabled) {
 				return _this.buildTree(node.nodes, level);
 			}
+
 		});
 	};
 
@@ -1159,8 +1164,9 @@
 		options = $.extend({}, _default.searchOptions, options);
 
 		this.clearSearch({ render: false });
+		this.searching = true;
 
-		var results = [];
+		this.searchResults = [];
 		if (pattern && pattern.length > 0) {
 
 			if (options.exactMatch) {
@@ -1172,12 +1178,12 @@
 				modifier += 'i';
 			}
 
-			results = this.findNodes(pattern, modifier);
+			this.searchResults = this.findNodes(pattern, modifier);
 
 			// Add searchResult property to all matching nodes
 			// This will be used to apply custom styles
 			// and when identifying result to be cleared
-			$.each(results, function (index, node) {
+			$.each(this.searchResults, function (index, node) {
 				node.searchResult = true;
 			})
 		}
@@ -1185,15 +1191,15 @@
 		// If revealResults, then render is triggered from revealNode
 		// otherwise we just call render.
 		if (options.revealResults) {
-			this.revealNode(results);
+			this.revealNode(this.searchResults);
 		}
 		else {
 			this.render();
 		}
 
-		this.$element.trigger('searchComplete', $.extend(true, {}, results));
+		this.$element.trigger('searchComplete', $.extend(true, {}, this.searchResults));
 
-		return results;
+		return this.searchResults;
 	};
 
 	/**
@@ -1202,6 +1208,7 @@
 	Tree.prototype.clearSearch = function (options) {
 
 		options = $.extend({}, { render: true }, options);
+		this.searching = false;
 
 		var results = $.each(this.findNodes('true', 'g', 'searchResult'), function (index, node) {
 			node.searchResult = false;
