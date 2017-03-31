@@ -1,5 +1,5 @@
 /* =========================================================
- * bootstrap-treeview.css v1.2.6
+ * bootstrap-treeview.css v1.2.8
  * =========================================================
  * Copyright 2013 Jonathan Miles 
  * Project URL : http://www.jondmiles.com/bootstrap-treeview
@@ -22,13 +22,21 @@
 }
 
 .treeview span.indent {
-    margin-left: 10px;
-    margin-right: 10px;
+    margin-left: 6px;
+    margin-right: 6px;
 }
 
 .treeview span.icon {
-    width: 12px;
+    width: 10px;
     margin-right: 5px;
+}
+
+.treeview span.text {
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: bottom;
 }
 
 .treeview .node-disabled {

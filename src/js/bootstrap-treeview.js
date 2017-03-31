@@ -1,5 +1,5 @@
 /* =========================================================
- * bootstrap-treeview.js v1.2.7
+ * bootstrap-treeview.js v1.2.8
  * =========================================================
  * Copyright 2013 Jonathan Miles
  * Project URL : http://www.jondmiles.com/bootstrap-treeview
@@ -502,11 +502,7 @@
 		this.$element.empty().append(this.$wrapper.empty());
 
 		// Build tree
-		if (this.searching) {
-			this.buildTree(this.searchResults, 0);
-		} else {
-			this.buildTree(this.tree, 0);
-		}
+		this.buildTree(this.tree, 0);
 	};
 
 	// Starting from the root node, and recursing down the
@@ -527,22 +523,24 @@
 				.addClass(node.searchResult ? 'search-result' : '') 
 				.attr('data-nodeid', node.nodeId)
 				.attr('style', _this.buildStyleOverride(node));
+			var buttonsSize = 0;
 
 			// Add indent/spacer to mimic tree structure
 			for (var i = 0; i < (level - 1); i++) {
 				treeItem.append(_this.template.indent);
+				buttonsSize += 16;
 			}
 
 			// Add expand, collapse or empty spacer icons
 			var classList = [];
-			if (!_this.searching && node.nodes && node.nodes.length > 0) {
+			if (node.nodes && node.nodes.length > 0) {
 				classList.push('expand-icon');
 				if (node.state.expanded) {
 					classList.push(_this.options.collapseIcon);
 				}
 				else {
 					classList.push(_this.options.expandIcon);
-				}
+				}				
 			}
 			else {
 				classList.push(_this.options.emptyIcon);
@@ -570,6 +568,7 @@
 					.append($(_this.template.icon)
 						.addClass(classList.join(' '))
 					);
+				buttonsSize += 15;
 			}
 
 			// Add check / unchecked icon
@@ -601,7 +600,10 @@
 			else {
 				// otherwise just text
 				treeItem
-					.append(node.text);
+					.append($(_this.template.text)
+						.attr('title', node.text)
+						.append(node.text)
+				);
 			}
 
 			// Add alert tag
@@ -610,6 +612,7 @@
 					.append($(_this.template.alertBadge)
 						.append(node.alertTag)
 					);
+				buttonsSize += 16 + (node.alertTag.toString().length * 7);
 			}
 
 			// Add tags as badges
@@ -619,6 +622,8 @@
 						.append($(_this.template.badge)
 							.append(tag)
 						);
+
+					buttonsSize += 16 + (tag.toString().length * 7);
 				});
 			}
 
@@ -652,20 +657,22 @@
                     }
                     
                     // append button
-                    treeButtonIconsItem.append(buttonItem);
+                    treeButtonIconsItem.append(buttonItem);                    
 				});
                 
                 treeItem.append(treeButtonIconsItem);
+                buttonsSize += 36;
             }
 
 			// Add item to the tree
 			_this.$wrapper.append(treeItem);
 
+			treeItem.find(".text").attr('style', 'width: calc(100% - ' + buttonsSize + 'px)')
+
 			// Recursively add child ndoes
-			if (!_this.searching && node.nodes && node.state.expanded && !node.state.disabled) {
+			if (node.nodes && node.state.expanded && !node.state.disabled) {
 				return _this.buildTree(node.nodes, level);
 			}
-
 		});
 	};
 
@@ -744,6 +751,7 @@
 		item: '<li class="list-group-item"></li>',
 		indent: '<span class="indent"></span>',
 		icon: '<span class="icon"></span>',
+		text: '<span class="text"></span>',
 		link: '<a href="#" style="color:inherit;"></a>',
 		badge: '<span class="badge"></span>',
 		alertBadge: '<span class="alert-badge"></span>',
@@ -752,7 +760,7 @@
 
 	};
 
-	Tree.prototype.css = '.treeview .list-group-item{cursor:pointer}.treeview span.indent{margin-left:10px;margin-right:10px}.treeview span.icon{width:12px;margin-right:5px}.treeview .node-disabled{color:silver;cursor:not-allowed}'
+	Tree.prototype.css = '.treeview .list-group-item{cursor:pointer}.treeview span.indent{margin-left:6px;margin-right:6px}.treeview span.icon{width:10px;margin-right:5px}.treeview .node-disabled{color:silver;cursor:not-allowed}'
 
 
 	/**
@@ -1164,9 +1172,8 @@
 		options = $.extend({}, _default.searchOptions, options);
 
 		this.clearSearch({ render: false });
-		this.searching = true;
 
-		this.searchResults = [];
+		var results = [];
 		if (pattern && pattern.length > 0) {
 
 			if (options.exactMatch) {
@@ -1178,12 +1185,12 @@
 				modifier += 'i';
 			}
 
-			this.searchResults = this.findNodes(pattern, modifier);
+			results = this.findNodes(pattern, modifier);
 
 			// Add searchResult property to all matching nodes
 			// This will be used to apply custom styles
 			// and when identifying result to be cleared
-			$.each(this.searchResults, function (index, node) {
+			$.each(results, function (index, node) {
 				node.searchResult = true;
 			})
 		}
@@ -1191,15 +1198,15 @@
 		// If revealResults, then render is triggered from revealNode
 		// otherwise we just call render.
 		if (options.revealResults) {
-			this.revealNode(this.searchResults);
+			this.revealNode(results);
 		}
 		else {
 			this.render();
 		}
 
-		this.$element.trigger('searchComplete', $.extend(true, {}, this.searchResults));
+		this.$element.trigger('searchComplete', $.extend(true, {}, results));
 
-		return this.searchResults;
+		return results;
 	};
 
 	/**
@@ -1208,7 +1215,6 @@
 	Tree.prototype.clearSearch = function (options) {
 
 		options = $.extend({}, { render: true }, options);
-		this.searching = false;
 
 		var results = $.each(this.findNodes('true', 'g', 'searchResult'), function (index, node) {
 			node.searchResult = false;

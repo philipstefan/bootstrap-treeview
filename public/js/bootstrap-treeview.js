@@ -523,10 +523,12 @@
 				.addClass(node.searchResult ? 'search-result' : '') 
 				.attr('data-nodeid', node.nodeId)
 				.attr('style', _this.buildStyleOverride(node));
+			var buttonsSize = 0;
 
 			// Add indent/spacer to mimic tree structure
 			for (var i = 0; i < (level - 1); i++) {
 				treeItem.append(_this.template.indent);
+				buttonsSize += 16;
 			}
 
 			// Add expand, collapse or empty spacer icons
@@ -538,7 +540,7 @@
 				}
 				else {
 					classList.push(_this.options.expandIcon);
-				}
+				}				
 			}
 			else {
 				classList.push(_this.options.emptyIcon);
@@ -566,6 +568,7 @@
 					.append($(_this.template.icon)
 						.addClass(classList.join(' '))
 					);
+				buttonsSize += 15;
 			}
 
 			// Add check / unchecked icon
@@ -597,7 +600,10 @@
 			else {
 				// otherwise just text
 				treeItem
-					.append(node.text);
+					.append($(_this.template.text)
+						.attr('title', node.text)
+						.append(node.text)
+				);
 			}
 
 			// Add alert tag
@@ -606,6 +612,7 @@
 					.append($(_this.template.alertBadge)
 						.append(node.alertTag)
 					);
+				buttonsSize += 16 + (node.alertTag.toString().length * 7);
 			}
 
 			// Add tags as badges
@@ -615,6 +622,8 @@
 						.append($(_this.template.badge)
 							.append(tag)
 						);
+
+					buttonsSize += 16 + (tag.toString().length * 7);
 				});
 			}
 
@@ -648,14 +657,17 @@
                     }
                     
                     // append button
-                    treeButtonIconsItem.append(buttonItem);
+                    treeButtonIconsItem.append(buttonItem);                    
 				});
                 
                 treeItem.append(treeButtonIconsItem);
+                buttonsSize += 36;
             }
 
 			// Add item to the tree
 			_this.$wrapper.append(treeItem);
+
+			treeItem.find(".text").attr('style', 'width: calc(100% - ' + buttonsSize + 'px)')
 
 			// Recursively add child ndoes
 			if (node.nodes && node.state.expanded && !node.state.disabled) {
@@ -739,6 +751,7 @@
 		item: '<li class="list-group-item"></li>',
 		indent: '<span class="indent"></span>',
 		icon: '<span class="icon"></span>',
+		text: '<span class="text"></span>',
 		link: '<a href="#" style="color:inherit;"></a>',
 		badge: '<span class="badge"></span>',
 		alertBadge: '<span class="alert-badge"></span>',
@@ -747,7 +760,7 @@
 
 	};
 
-	Tree.prototype.css = '.treeview .list-group-item{cursor:pointer}.treeview span.indent{margin-left:10px;margin-right:10px}.treeview span.icon{width:12px;margin-right:5px}.treeview .node-disabled{color:silver;cursor:not-allowed}'
+	Tree.prototype.css = '.treeview .list-group-item{cursor:pointer}.treeview span.indent{margin-left:6px;margin-right:6px}.treeview span.icon{width:10px;margin-right:5px}.treeview .node-disabled{color:silver;cursor:not-allowed}'
 
 
 	/**

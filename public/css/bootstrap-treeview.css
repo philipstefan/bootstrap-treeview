@@ -3,7 +3,7 @@
  * =========================================================
  * Copyright 2013 Jonathan Miles 
  * Project URL : http://www.jondmiles.com/bootstrap-treeview
- *	
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,22 +18,30 @@
  * ========================================================= */
 
 .treeview .list-group-item {
-	cursor: pointer;
+    cursor: pointer;
 }
 
 .treeview span.indent {
-	margin-left: 10px;
-	margin-right: 10px;
+    margin-left: 6px;
+    margin-right: 6px;
 }
 
 .treeview span.icon {
-	width: 12px;
-	margin-right: 5px;
+    width: 10px;
+    margin-right: 5px;
+}
+
+.treeview span.text {
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: bottom;
 }
 
 .treeview .node-disabled {
-	color: silver;
-	cursor: not-allowed;
+    color: silver;
+    cursor: not-allowed;
 }
 
 .treeview .tree-icons {
