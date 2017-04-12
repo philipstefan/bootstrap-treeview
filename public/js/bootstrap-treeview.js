@@ -1,5 +1,5 @@
 /* =========================================================
- * bootstrap-treeview.js v1.2.6
+ * bootstrap-treeview.js v1.2.9
  * =========================================================
  * Copyright 2013 Jonathan Miles
  * Project URL : http://www.jondmiles.com/bootstrap-treeview
@@ -535,12 +535,13 @@
 			var classList = [];
 			if (node.nodes && node.nodes.length > 0) {
 				classList.push('expand-icon');
+				buttonsSize += 6;
 				if (node.state.expanded) {
 					classList.push(_this.options.collapseIcon);
 				}
 				else {
 					classList.push(_this.options.expandIcon);
-				}				
+				}			
 			}
 			else {
 				classList.push(_this.options.emptyIcon);
@@ -568,7 +569,7 @@
 					.append($(_this.template.icon)
 						.addClass(classList.join(' '))
 					);
-				buttonsSize += 15;
+				buttonsSize += 16;
 			}
 
 			// Add check / unchecked icon
