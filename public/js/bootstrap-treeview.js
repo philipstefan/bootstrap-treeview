@@ -1,5 +1,5 @@
 /* =========================================================
- * bootstrap-treeview.js v1.2.9
+ * bootstrap-treeview.js v1.2.10
  * =========================================================
  * Copyright 2013 Jonathan Miles
  * Project URL : http://www.jondmiles.com/bootstrap-treeview
@@ -544,6 +544,7 @@
 				}			
 			}
 			else {
+				buttonsSize += 6;
 				classList.push(_this.options.emptyIcon);
 			}
 
@@ -609,11 +610,10 @@
 
 			// Add alert tag
 			if (node.alertTag) {
-				treeItem
+				treeItem.find(".text")
 					.append($(_this.template.alertBadge)
 						.append(node.alertTag)
 					);
-				buttonsSize += 16 + (node.alertTag.toString().length * 7);
 			}
 
 			// Add tags as badges
