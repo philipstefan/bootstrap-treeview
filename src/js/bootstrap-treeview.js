@@ -1,5 +1,5 @@
 /* =========================================================
- * bootstrap-treeview.js v1.2.10
+ * bootstrap-treeview.js v1.2.11
  * =========================================================
  * Copyright 2013 Jonathan Miles
  * Project URL : http://www.jondmiles.com/bootstrap-treeview
@@ -523,12 +523,19 @@
 				.addClass(node.searchResult ? 'search-result' : '') 
 				.attr('data-nodeid', node.nodeId)
 				.attr('style', _this.buildStyleOverride(node));
-			var buttonsSize = 0;
 
+			var buttonsSize = 0;
+			var nodeButtons = [];
+			if (typeof _this.options.buttons === 'function') {
+                nodeButtons = _this.options.buttons(node);
+			} else if (typeof _this.options.buttons === 'object' && _this.options.buttons.constructor === Array) {
+				nodeButtons = _this.options.buttons;
+			}
+			
 			// Add indent/spacer to mimic tree structure
 			for (var i = 0; i < (level - 1); i++) {
 				treeItem.append(_this.template.indent);
-				buttonsSize += 16;
+				buttonsSize += 6;
 			}
 
 			// Add expand, collapse or empty spacer icons
@@ -602,18 +609,22 @@
 			else {
 				// otherwise just text
 				treeItem
-					.append($(_this.template.text)
+					.append($(_this.template.textArea)
 						.attr('title', node.text)
-						.append(node.text)
+						.append($(_this.template.text)
+							.append(node.text)
+						)
 				);
 			}
-
+			
 			// Add alert tag
+			var tagSize = 0;
 			if (node.alertTag) {
-				treeItem.find(".text")
+				treeItem.find(".text-area")
 					.append($(_this.template.alertBadge)
 						.append(node.alertTag)
 					);
+				tagSize = 16 + (node.alertTag.toString().length * 7);
 			}
 
 			// Add tags as badges
@@ -623,24 +634,14 @@
 						.append($(_this.template.badge)
 							.append(tag)
 						);
-
-					buttonsSize += 16 + (tag.toString().length * 7);
+					
+					if (nodeButtons.length == 0) {
+						buttonsSize += 16 + (tag.toString().length * 7);
+					}
 				});
 			}
 
-			var nodeButtons = [];
-			
-            // Add buttons
-			if (typeof _this.options.buttons === 'function') {
-
-                nodeButtons = _this.options.buttons(node);
-                
-			} else if (typeof _this.options.buttons === 'object' && _this.options.buttons.constructor === Array) {
-				
-				nodeButtons = _this.options.buttons;
-				
-			}
-
+			// Add buttons
 			if (nodeButtons.length > 0) {
                 var treeButtonIconsItem = $(_this.template.treeButtonIcons);
                 
@@ -668,8 +669,10 @@
 			// Add item to the tree
 			_this.$wrapper.append(treeItem);
 
-			treeItem.find(".text").attr('style', 'width: calc(100% - ' + buttonsSize + 'px)')
-
+			var textItem = treeItem.find(".text-area");
+			textItem.attr('style', 'width: calc(100% - ' + buttonsSize + 'px');
+			textItem.find(".text").attr('style', 'max-width: calc(100% - ' + tagSize + 'px)');
+			
 			// Recursively add child ndoes
 			if (node.nodes && node.state.expanded && !node.state.disabled) {
 				return _this.buildTree(node.nodes, level);
@@ -752,6 +755,7 @@
 		item: '<li class="list-group-item"></li>',
 		indent: '<span class="indent"></span>',
 		icon: '<span class="icon"></span>',
+		textArea: '<span class="text-area"></span>',
 		text: '<span class="text"></span>',
 		link: '<a href="#" style="color:inherit;"></a>',
 		badge: '<span class="badge"></span>',
@@ -761,7 +765,7 @@
 
 	};
 
-	Tree.prototype.css = '.treeview .list-group-item{cursor:pointer}.treeview span.indent{margin-left:6px;margin-right:6px}.treeview span.icon{width:10px;margin-right:5px}.treeview .node-disabled{color:silver;cursor:not-allowed}'
+	Tree.prototype.css = '.treeview .list-group-item{cursor:pointer}.treeview span.indent{margin-left:3px;margin-right:3px}.treeview span.icon{width:10px;margin-right:5px}.treeview .node-disabled{color:silver;cursor:not-allowed}'
 
 
 	/**
